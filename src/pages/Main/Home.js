@@ -6,17 +6,43 @@ import { toggleBrands, toogleStock } from "../../redux/actions/filterAction";
 const Home = () => {
   const [products, setProducts] = useState([]);
   const dispatch = useDispatch();
-  const filter = useSelector((state) => state.filter.filters)
-  const {brands, stock} = filter
+  const filter = useSelector((state) => state.filter.filters);
+  const { brands, stock } = filter;
 
   useEffect(() => {
-    fetch("products.json")
+    fetch("http://localhost:5000/products")
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
       });
   }, []);
-  console.log(products);
+
+  let content;
+
+  if (products.length) {
+    content = products?.map((product) => (
+      <ProductCard key={product.model} product={product} />
+    ));
+  }
+
+  if (products.length && (brands.length || stock)) {
+    content = products
+      ?.filter((product) => {
+        if (stock) {
+          return product.status === true;
+        } else {
+          return product;
+        }
+      })
+      .filter((product) => {
+        if (brands.length) {
+          return brands.includes(product.brand);
+        } else {
+          return product;
+        }
+      })
+      .map((product) => <ProductCard key={product.model} product={product} />);
+  }
 
   const activeClass = "text-white  bg-indigo-500 border-white";
 
@@ -25,27 +51,31 @@ const Home = () => {
       <div className="mb-10 flex justify-end gap-5">
         <button
           onClick={() => dispatch(toogleStock())}
-          className={`border px-3 py-2 rounded-full font-semibold ${stock && activeClass } `}
+          className={`border px-3 py-2 rounded-full font-semibold ${
+            stock && activeClass
+          } `}
         >
           In Stock
         </button>
         <button
           onClick={() => dispatch(toggleBrands("amd"))}
-          className={`border px-3 py-2 rounded-full font-semibold ${brands.includes("amd") && activeClass}`}
+          className={`border px-3 py-2 rounded-full font-semibold ${
+            brands.includes("amd") && activeClass
+          }`}
         >
           AMD
         </button>
         <button
           onClick={() => dispatch(toggleBrands("intel"))}
-          className={`border px-3 py-2 rounded-full font-semibold ${brands.includes("intel") && activeClass}`}
+          className={`border px-3 py-2 rounded-full font-semibold ${
+            brands.includes("intel") && activeClass
+          }`}
         >
           Intel
         </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-14">
-        {products?.map((product) => (
-          <ProductCard key={product.model} product={product} />
-        ))}
+        {content}
       </div>
     </div>
   );
