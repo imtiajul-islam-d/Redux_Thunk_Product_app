@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProductCard from "../../components/ProductCard";
 import { toggleBrands, toogleStock } from "../../redux/actions/filterAction";
+import { loadProducts } from "../../redux/actions/productAction";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -13,7 +14,7 @@ const Home = () => {
     fetch("http://localhost:5000/products")
       .then((res) => res.json())
       .then((data) => {
-        setProducts(data);
+        dispatch(loadProducts(data))
       });
   }, []);
 
