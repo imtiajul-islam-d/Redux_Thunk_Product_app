@@ -31,14 +31,14 @@ const Home = () => {
           return product;
         }
       })
-      .filter((product) => {
+      ?.filter((product) => {
         if (brands.length) {
           return brands.includes(product.brand);
         } else {
           return product;
         }
       })
-      .map((product) => <ProductCard key={product.model} product={product} />);
+      ?.map((product) => <ProductCard key={product.model} product={product} />);
   }
 
   const activeClass = "text-white  bg-indigo-500 border-white";

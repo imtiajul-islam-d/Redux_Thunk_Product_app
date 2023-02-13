@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import loadProductData from "../../redux/thunk/products/fetchProducts";
 
 const ProductList = () => {
-  const [products, setProducts] = useState([]);
+  const dispatch = useDispatch();
+  const products = useSelector((state) => state.product.products);
 
   useEffect(() => {
-    fetch("http://localhost:5000/products")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setProducts(data);
-      });
-  }, []);
+    dispatch(loadProductData());
+  }, [dispatch]);
 
   return (
     <div class="flex flex-col justify-center items-center h-full w-full ">
